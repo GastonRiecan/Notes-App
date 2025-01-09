@@ -10,13 +10,15 @@ const NotesList = () => {
     getNotes();
   }, []);
 
+  const BACK_URL = "https://notes-app-psi-ashen.vercel.app"
+
   const getNotes = async () => {
-    const res = await axios.get("http://localhost:4000/api/notes");
+    const res = await axios.get(`${BACK_URL}/api/notes`);
     setNotes(res.data);
   };
 
   const deleteNote = async (id) => {
-    await axios.delete(`http://localhost:4000/api/notes/${id}`);
+    await axios.delete(`${BACK_URL}/api/notes/${id}`);
     console.log("Note deleted");
     getNotes();
   };

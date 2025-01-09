@@ -14,13 +14,15 @@ const CreateNote = () => {
   const [date, setDate] = useState(new Date());
   const [editing, setEditing] = useState(false);
 
+  const BACK_URL = "https://notes-app-psi-ashen.vercel.app"
+
   useEffect(() => {
     getUsers();
     if (id) {
       setEditing(true);
       const getNote = async () => {
         try {
-          const res = await axios.get(`http://localhost:4000/api/notes/${id}`);
+          const res = await axios.get(`${BACK_URL}/api/notes/${id}`);
           const note = res.data;
           setTitle(note.title);
           setContent(note.content);
@@ -35,7 +37,7 @@ const CreateNote = () => {
   }, [id]);
 
   const getUsers = async () => {
-    const res = await axios.get("http://localhost:4000/api/users");
+    const res = await axios.get(`${BACK_URL}/api/users`);
     setUsers(res.data.map((user) => user.username));
     setUserSelected(res.data[0]?.username || "");
   };
@@ -51,9 +53,9 @@ const CreateNote = () => {
 
     try {
       if (editing) {
-        await axios.put(`http://localhost:4000/api/notes/${id}`, newNote);
+        await axios.put(`${BACK_URL}/api/notes/${id}`, newNote);
       } else {
-        await axios.post("http://localhost:4000/api/notes", newNote);
+        await axios.post(`${BACK_URL}/api/notes`, newNote);
       }
       window.location.href = "/";
     } catch (error) {

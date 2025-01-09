@@ -14,8 +14,9 @@
   "description": "",
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.4.7",
     "express": "^4.21.0",
+    "mongod": "^2.0.0",
     "mongoose": "^8.6.2",
     "timeago.js": "^4.0.2"
   },

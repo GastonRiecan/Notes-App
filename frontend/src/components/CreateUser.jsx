@@ -1,75 +1,73 @@
-import { Component } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-export default class CreateUser extends Component {
-  state = {
-    users: [],
-    username: ""
+
+const CreateUser = () => {
+  const [users, setUsers] = useState([]);
+  const [username, setUsername] = useState("");
+
+  const BACK_URL = "https://notes-app-psi-ashen.vercel.app";
+
+  useEffect(() => {
+    getUsers();
+  }, []);
+
+  const getUsers = async () => {
+    const res = await axios.get(`${BACK_URL}/api/users`);
+    setUsers(res.data);
   };
 
-async componentDidMount() {
-    this.getUsers();
-    console.log(this.state.users);
-  } 
+  const onChangeUsername = (e) => {
+    setUsername(e.target.value);
+  };
 
-  getUsers = async () => {
-    const res = await axios.get("http://localhost:4000/api/users");
-    this.setState({ users: res.data });
-  }
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    await axios.post(`${BACK_URL}/api/users`, { username });
+    setUsername("");
+    getUsers();
+  };
 
-  onChangeUsername = (e) => {
-    this.setState({ username: e.target.value })
-  }
+  const deleteUser = async (id) => {
+    console.log("El usuario será eliminado:", id);
+    await axios.delete(`${BACK_URL}/api/users/${id}`);
+    getUsers();
+  };
 
-
-onSubmit = async (e) => {
-  e.preventDefault();
-  await axios.post("http://localhost:4000/api/users", {
-    username: this.state.username
-  })
-  this.setState({username: ""})
-  this.getUsers();
-}
-
-deleteUser = async (id) => {
-  console.log("El usuario será eliminado:", id);
-  await axios.delete(`http://localhost:4000/api/users/${id}`)
-  this.getUsers();
-}
-
-
-  render() {
-    return (
-      <div className="row">
-        <div className="col-md-4">
-          <div className="card card-body">
-            <h3>Create New User</h3>
-            <form onSubmit={this.onSubmit}>
-              <div className="form-group">
-                <input type="text"
+  return (
+    <div className="row">
+      <div className="col-md-4">
+        <div className="card card-body">
+          <h3>Create New User</h3>
+          <form onSubmit={onSubmit}>
+            <div className="form-group">
+              <input
+                type="text"
                 className="form-control"
-                value={this.state.username}
-                onChange={this.onChangeUsername}/>
-              </div>
-              <button type="submit" className="btn btn-primary">
-                Save
-              </button>
-            </form>
-          </div>
-        </div>
-        <div className="col-md-8">
-          <ul className="list-group">
-            {this.state.users.map((user) => (
-              <li
-                className="list-group-item list-group-item-action"
-                key={user._id}
-                onClick={() => this.deleteUser(user._id)}
-              >
-                {user.username}
-              </li>
-            ))}
-          </ul>
+                value={username}
+                onChange={onChangeUsername}
+              />
+            </div>
+            <button type="submit" className="btn btn-primary">
+              Save
+            </button>
+          </form>
         </div>
       </div>
-    );
-  }
-}
+      <div className="col-md-8">
+        <ul className="list-group">
+          {users.map((user) => (
+            <li
+              className="list-group-item list-group-item-action"
+              key={user._id}
+              onClick={() => deleteUser(user._id)}
+            >
+              {user.username}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+export default CreateUser;
